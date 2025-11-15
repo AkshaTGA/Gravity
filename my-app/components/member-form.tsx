@@ -124,7 +124,7 @@ export function MemberForm({ member, onSubmit, onCancel }: MemberFormProps) {
             <label className="mt-3 inline-flex items-center gap-2 select-none">
               <input
                 type="checkbox"
-                checked={formData.role === "coordinator"}
+                checked={false}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, role: e.target.checked ? "coordinator" : "member" }))
                 }

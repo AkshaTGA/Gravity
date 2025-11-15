@@ -3,13 +3,13 @@
 import { useAdminStore } from "@/hooks/use-admin-store"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
-import { useMemo } from "react"
+import { Suspense, useMemo } from "react"
 import type { Member } from "@/lib/types"
 import { useSearchParams } from "next/navigation"
 import ProfileCard from "@/components/profile-card"
 import "@/components/ProfileCard.css"
 
-export default function MembersPage() {
+function MembersContent() {
   const { members } = useAdminStore()
   const searchParams = useSearchParams()
   const wingFilter = searchParams.get("wing") || ""
@@ -128,4 +128,12 @@ export default function MembersPage() {
     </>
   )
 }
- 
+
+export default function MembersPage() {
+  return (
+    <Suspense fallback={<div />}> 
+      <MembersContent />
+    </Suspense>
+  )
+}
+
