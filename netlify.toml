@@ -1,0 +1,13 @@
+# Netlify configuration for monorepo (Next.js app in my-app/)
+[build]
+  base = "my-app"
+  command = "npm run build"
+  publish = ".next"
+
+# Enable the official Next.js runtime so API routes and SSR work
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+# Optional: set default production build environment
+[build.environment]
+  NEXT_TELEMETRY_DISABLED = "1"
