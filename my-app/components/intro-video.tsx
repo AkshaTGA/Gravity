@@ -1,51 +1,54 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import "./intro-video.css"
+import { useEffect, useRef, useState } from "react";
+import "./intro-video.css";
 
-const STORAGE_KEY = "introVideoSeenAt"
-const EXPIRY_MS = 24 * 60 * 60 * 1000 
+const STORAGE_KEY = "introVideoSeenAt";
+const EXPIRY_MS = 24 * 60 * 60 * 1000;
 
-export default function IntroVideo() {
-  const [shouldShow, setShouldShow] = useState<boolean>(false)
-  const [animating, setAnimating] = useState<boolean>(false)
-  const videoRef = useRef<HTMLVideoElement | null>(null)
+export default function IntroVideo({ onFinish }: { onFinish?: () => void }) {
+  const [shouldShow, setShouldShow] = useState<boolean>(false);
+  const [animating, setAnimating] = useState<boolean>(false);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      const ts = raw ? Number(raw) : 0
-      const now = Date.now()
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const ts = raw ? Number(raw) : 0;
+      const now = Date.now();
       if (!ts || Number.isNaN(ts) || now - ts > EXPIRY_MS) {
-        setShouldShow(true)
+        setShouldShow(true);
       }
     } catch (e) {
-      setShouldShow(true)
+      setShouldShow(true);
     }
-  }, [])
+  }, []);
 
   useEffect(() => {
     if (shouldShow && videoRef.current) {
-      videoRef.current.play().catch(() => {
-      })
+      videoRef.current.play().catch(() => {});
     }
-  }, [shouldShow])
+  }, [shouldShow]);
 
   function handleEnded() {
-    setAnimating(true)
+    setAnimating(true);
     try {
-      localStorage.setItem(STORAGE_KEY, String(Date.now()))
-    } catch (e) {
-    }
+      localStorage.setItem(STORAGE_KEY, String(Date.now()));
+    } catch (e) {}
 
-    const ANIM_MS = 900
+    const ANIM_MS = 900;
     setTimeout(() => {
-      setShouldShow(false)
-      setAnimating(false)
-    }, ANIM_MS)
+      setShouldShow(false);
+      setAnimating(false);
+      try {
+        onFinish?.();
+      } catch (e) {
+        // ignore
+      }
+    }, ANIM_MS);
   }
 
-  if (!shouldShow) return null
+  if (!shouldShow) return null;
 
   return (
     <div className="intro-overlay" aria-hidden={!shouldShow}>
@@ -61,5 +64,5 @@ export default function IntroVideo() {
 
       {animating && <div className="intro-bubble" />}
     </div>
-  )
+  );
 }
