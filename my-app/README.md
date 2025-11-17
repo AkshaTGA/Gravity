@@ -1,24 +1,50 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+## Getting Started (Local Dev)
 
-First, run the development server:
+This repo includes a Next.js frontend and an Express + MongoDB backend.
+
+1) Configure environment variables
+
+- Copy `.env.local.example` to `.env.local` inside `my-app/` and fill values:
+	- `MONGO_URI` (required)
+	- `ADMIN_ID`, `ADMIN_PASSWORD`, `JWT_SECRET` (required)
+	- `NEXT_PUBLIC_BACKEND_URL` (optional in dev; defaults to `http://localhost:4000`)
+
+2) Start frontend and backend together
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run dev:full
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- Frontend: http://localhost:3000
+- Backend:  http://localhost:4000
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+If you prefer to run separately:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+# Terminal 1 (frontend)
+npm run dev
+
+# Terminal 2 (backend)
+npm run dev:backend
+```
+
+3) Verify backend health (PowerShell)
+
+```powershell
+Invoke-WebRequest -Uri http://localhost:4000/api/public/members | Select-Object -ExpandProperty Content
+Invoke-WebRequest -Uri http://localhost:4000/api/public/events   | Select-Object -ExpandProperty Content
+```
+
+If these return JSON, the frontend hooks will load data correctly.
+
+Troubleshooting "Failed to fetch":
+- Ensure the backend is running and `MONGO_URI` is valid.
+- Open the app via http://localhost:3000 (not a file:// path).
+- Check that Windows Firewall isn’t blocking port 4000.
+- In production, set `NEXT_PUBLIC_BACKEND_URL` to your deployed backend URL (https).
 
 ## Learn More
 

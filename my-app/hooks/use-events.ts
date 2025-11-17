@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import type { Event } from "@/lib/types"
 
-const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000"
+// Use relative path and let Next.js rewrites proxy to backend
 
 export function useEvents() {
   const [events, setEvents] = useState<Event[]>([])
@@ -13,7 +13,7 @@ export function useEvents() {
 
     const loadEvents = async () => {
       try {
-        const res = await fetch(`${API_BASE}/api/public/events`, {
+        const res = await fetch(`/api/public/events`, {
           headers: { "Content-Type": "application/json" },
         })
         if (!res.ok) return
