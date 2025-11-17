@@ -55,7 +55,7 @@ export default function IntroVideo({ onFinish }: { onFinish?: () => void }) {
       <video
         ref={videoRef}
         className={`intro-video ${animating ? "intro-video-hidden" : ""}`}
-        src="/introvideo.mp4"
+        src="/introvideonew.mp4"
         playsInline
         autoPlay
         muted
