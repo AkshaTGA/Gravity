@@ -1,38 +1,47 @@
 "use client"
 
-import { useEffect, useState, useCallback } from "react"
-import { defaultMembers } from "@/lib/data"
+import { useEffect, useState } from "react"
 import type { Member } from "@/lib/types"
 
-const STORAGE_KEY = "gravity_members"
+const API_BASE = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:4000"
 
 export function useMembers() {
-  const [members, setMembers] = useState<Member[]>(defaultMembers)
-
-  const loadMembers = useCallback(() => {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY)
-      if (raw) {
-        const parsed: Member[] = JSON.parse(raw)
-        if (Array.isArray(parsed)) {
-          setMembers(parsed)
-        }
-      }
-    } catch (e) {
-      // Ignore parse errors; keep default
-    }
-  }, [])
+  const [members, setMembers] = useState<Member[]>([])
 
   useEffect(() => {
-    loadMembers()
-    const onStorage = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY) {
-        loadMembers()
+    let cancelled = false
+
+    const loadMembers = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/api/public/members`, {
+          // Public view does not send auth; backend can expose a non-auth route if needed
+          headers: { "Content-Type": "application/json" },
+        })
+        if (!res.ok) return
+        const data = (await res.json()) as any[]
+        const normalized: Member[] = data.map((m) => ({
+          id: m.id || m._id || String(m.id ?? m._id ?? ""),
+          name: m.name,
+          role: m.role,
+          wing: m.wing,
+          bio: m.bio ?? "",
+          image: m.image,
+          isOverallCoordinator: m.isOverallCoordinator ?? false,
+          socials: m.socials ?? {},
+          createdAt: typeof m.createdAt === "string" ? Date.parse(m.createdAt) : m.createdAt ?? undefined,
+        }))
+        if (!cancelled) setMembers(normalized)
+      } catch (e) {
+        console.error("Failed to load members", e)
       }
     }
-    window.addEventListener("storage", onStorage)
-    return () => window.removeEventListener("storage", onStorage)
-  }, [loadMembers])
+
+    void loadMembers()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   return members
 }

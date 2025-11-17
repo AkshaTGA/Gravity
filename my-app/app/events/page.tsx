@@ -5,11 +5,11 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { Calendar, MapPin, X } from "lucide-react"
 import MagicButton from "@/components/magic-button"
-import { useAdminStore } from "@/hooks/use-admin-store"
+import { useEvents } from "@/hooks/use-events"
 import type { Event } from "@/lib/types"
 
 export default function EventsPage() {
-  const { events } = useAdminStore()
+  const events = useEvents()
   const [selected, setSelected] = useState<Event | null>(null)
   const [email, setEmail] = useState("")
   const [subStatus, setSubStatus] = useState<"idle" | "loading" | "ok" | "error">("idle")

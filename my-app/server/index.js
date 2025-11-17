@@ -56,6 +56,17 @@ app.post('/api/admin/login', (req, res) => {
 });
 
 // Members CRUD
+// Public read-only endpoints (no auth) for site pages
+app.get('/api/public/members', async (_req, res) => {
+  const members = await Member.find().sort({ createdAt: -1 }).lean();
+  res.json(members);
+});
+
+app.get('/api/public/events', async (_req, res) => {
+  const events = await Event.find().sort({ date: 1 }).lean();
+  res.json(events);
+});
+
 app.get('/api/members', auth, async (_req, res) => {
   const members = await Member.find().sort({ createdAt: -1 }).lean();
   res.json(members);
