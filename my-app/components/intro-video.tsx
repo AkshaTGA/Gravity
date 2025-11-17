@@ -10,6 +10,7 @@ export default function IntroVideo({ onFinish }: { onFinish?: () => void }) {
   const [shouldShow, setShouldShow] = useState<boolean>(false);
   const [animating, setAnimating] = useState<boolean>(false);
   const [videoSrc, setVideoSrc] = useState<string>("/introvideonew.mp4");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
   useEffect(() => {
@@ -43,16 +44,33 @@ export default function IntroVideo({ onFinish }: { onFinish?: () => void }) {
 
   useEffect(() => {
     if (shouldShow && videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
-  }, [shouldShow]);
+      // Wait for video to be loaded before playing
+      const video = videoRef.current;
 
-  function handleEnded() {
-    setAnimating(true);
+      const handleCanPlay = () => {
+        setIsLoading(false);
+        video.play().catch(() => {});
+      };
+
+      if (video.readyState >= 3) {
+        // Video is already loaded
+        handleCanPlay();
+      } else {
+        video.addEventListener("canplaythrough", handleCanPlay, { once: true });
+      }
+
+      return () => {
+        video.removeEventListener("canplaythrough", handleCanPlay);
+      };
+    }
+  }, [shouldShow, videoSrc]);
+
+  function handleSkip() {
     try {
       localStorage.setItem(STORAGE_KEY, String(Date.now()));
     } catch (e) {}
 
+    setAnimating(true);
     const ANIM_MS = 800;
     setTimeout(() => {
       setShouldShow(false);
@@ -65,6 +83,10 @@ export default function IntroVideo({ onFinish }: { onFinish?: () => void }) {
     }, ANIM_MS);
   }
 
+  function handleEnded() {
+    handleSkip();
+  }
+
   if (!shouldShow) return null;
 
   return (
@@ -72,19 +94,36 @@ export default function IntroVideo({ onFinish }: { onFinish?: () => void }) {
       className={`intro-overlay ${animating ? "intro-overlay-fade" : ""}`}
       aria-hidden={!shouldShow}
     >
+      {isLoading && (
+        <div className="intro-loader">
+          <div className="loader-spinner"></div>
+          <p className="loader-text">Loading...</p>
+        </div>
+      )}
+
       <video
         ref={videoRef}
         className={`intro-video ${
           videoSrc === "/introvideo.mp4"
             ? "intro-video-desktop"
             : "intro-video-mobile"
-        }`}
+        } ${isLoading ? "video-hidden" : ""}`}
         src={videoSrc}
         playsInline
-        autoPlay
         muted
+        preload="auto"
         onEnded={handleEnded}
       />
+
+      {!isLoading && (
+        <button
+          className="intro-skip-btn"
+          onClick={handleSkip}
+          aria-label="Skip intro"
+        >
+          Skip
+        </button>
+      )}
     </div>
   );
 }

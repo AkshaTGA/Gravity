@@ -1,9 +1,13 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { motion, useInView, Transition, Easing,AnimatePresence } from "framer-motion";
-import React, {useRef,useEffect, useState, useMemo} from 'react';
-
-
+import {
+  motion,
+  useInView,
+  Transition,
+  Easing,
+  AnimatePresence,
+} from "framer-motion";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 
 export function LettersPullUp({
   text,
@@ -48,14 +52,12 @@ export function LettersPullUp({
   );
 }
 
-
-
 type BlurTextProps = {
   text?: string;
   delay?: number;
   className?: string;
-  animateBy?: 'words' | 'letters';
-  direction?: 'top' | 'bottom';
+  animateBy?: "words" | "letters";
+  direction?: "top" | "bottom";
   threshold?: number;
   rootMargin?: string;
   animationFrom?: Record<string, string | number>;
@@ -69,30 +71,33 @@ const buildKeyframes = (
   from: Record<string, string | number>,
   steps: Array<Record<string, string | number>>
 ): Record<string, Array<string | number>> => {
-  const keys = new Set<string>([...Object.keys(from), ...steps.flatMap(s => Object.keys(s))]);
+  const keys = new Set<string>([
+    ...Object.keys(from),
+    ...steps.flatMap((s) => Object.keys(s)),
+  ]);
 
   const keyframes: Record<string, Array<string | number>> = {};
-  keys.forEach(k => {
-    keyframes[k] = [from[k], ...steps.map(s => s[k])];
+  keys.forEach((k) => {
+    keyframes[k] = [from[k], ...steps.map((s) => s[k])];
   });
   return keyframes;
 };
 
 export const BlurText: React.FC<BlurTextProps> = ({
-  text = '',
+  text = "",
   delay = 200,
-  className = '',
-  animateBy = 'words',
-  direction = 'top',
+  className = "",
+  animateBy = "words",
+  direction = "top",
   threshold = 0.1,
-  rootMargin = '0px',
+  rootMargin = "0px",
   animationFrom,
   animationTo,
   easing = (t: number) => t,
   onAnimationComplete,
-  stepDuration = 0.35
+  stepDuration = 0.35,
 }) => {
-  const elements = animateBy === 'words' ? text.split(' ') : text.split('');
+  const elements = animateBy === "words" ? text.split(" ") : text.split("");
   const [inView, setInView] = useState(false);
   const ref = useRef<HTMLParagraphElement>(null);
 
@@ -113,18 +118,20 @@ export const BlurText: React.FC<BlurTextProps> = ({
 
   const defaultFrom = useMemo(
     () =>
-      direction === 'top' ? { filter: 'blur(10px)', opacity: 0, y: -50 } : { filter: 'blur(10px)', opacity: 0, y: 50 },
+      direction === "top"
+        ? { filter: "blur(10px)", opacity: 0, y: -50 }
+        : { filter: "blur(10px)", opacity: 0, y: 50 },
     [direction]
   );
 
   const defaultTo = useMemo(
     () => [
       {
-        filter: 'blur(5px)',
+        filter: "blur(5px)",
         opacity: 0.5,
-        y: direction === 'top' ? 5 : -5
+        y: direction === "top" ? 5 : -5,
       },
-      { filter: 'blur(0px)', opacity: 1, y: 0 }
+      { filter: "blur(0px)", opacity: 1, y: 0 },
     ],
     [direction]
   );
@@ -134,7 +141,9 @@ export const BlurText: React.FC<BlurTextProps> = ({
 
   const stepCount = toSnapshots.length + 1;
   const totalDuration = stepDuration * (stepCount - 1);
-  const times = Array.from({ length: stepCount }, (_, i) => (stepCount === 1 ? 0 : i / (stepCount - 1)));
+  const times = Array.from({ length: stepCount }, (_, i) =>
+    stepCount === 1 ? 0 : i / (stepCount - 1)
+  );
 
   return (
     <p ref={ref} className={`blur-text ${className} flex flex-wrap`}>
@@ -145,7 +154,7 @@ export const BlurText: React.FC<BlurTextProps> = ({
           duration: totalDuration,
           times,
           delay: (index * delay) / 1000,
-          ease: easing
+          ease: easing,
         };
 
         return (
@@ -154,14 +163,16 @@ export const BlurText: React.FC<BlurTextProps> = ({
             initial={fromSnapshot}
             animate={inView ? animateKeyframes : fromSnapshot}
             transition={spanTransition}
-            onAnimationComplete={index === elements.length - 1 ? onAnimationComplete : undefined}
+            onAnimationComplete={
+              index === elements.length - 1 ? onAnimationComplete : undefined
+            }
             style={{
-              display: 'inline-block',
-              willChange: 'transform, filter, opacity'
+              display: "inline-block",
+              willChange: "transform, filter, opacity",
             }}
           >
-            {segment === ' ' ? '\u00A0' : segment}
-            {animateBy === 'words' && index < elements.length - 1 && '\u00A0'}
+            {segment === " " ? "\u00A0" : segment}
+            {animateBy === "words" && index < elements.length - 1 && "\u00A0"}
           </motion.span>
         );
       })}
@@ -169,34 +180,32 @@ export const BlurText: React.FC<BlurTextProps> = ({
   );
 };
 
-
-
-
- 
- 
-export function GradualSpacing({ text = 'Gradual Spacing' ,className=""}: { text: string,className:string }) {
+export function GradualSpacing({
+  text = "Our Seven Wings",
+  className = "",
+}: {
+  text: string;
+  className: string;
+}) {
   const ref = React.useRef(null);
   const isInView = useInView(ref, { once: true });
   return (
-    <div className="flex space-x-[0.5px] justify-center">
+    <div className="flex flex-wrap space-x-[0.5px] justify-center items-center gap-y-0">
       <AnimatePresence>
-        {text.split('').map((char, i) => (
+        {text.split("").map((char, i) => (
           <motion.p
             ref={ref}
             key={i}
             initial={{ opacity: 0, x: -18 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             exit="hidden"
-            transition={{ duration: 0.5}}
+            transition={{ duration: 0.5 }}
             className={className}
           >
-            {char === ' ' ? <span>&nbsp;</span> : char}
+            {char === " " ? <span>&nbsp;</span> : char}
           </motion.p>
         ))}
       </AnimatePresence>
     </div>
   );
 }
-
-
-
