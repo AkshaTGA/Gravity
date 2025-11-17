@@ -4,6 +4,7 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { defaultProjects } from "@/lib/data"
 import { Github, ExternalLink } from "lucide-react"
+import MagicButton from "@/components/magic-button"
 
 export default function ProjectsPage() {
   return (
@@ -17,53 +18,51 @@ export default function ProjectsPage() {
             <p className="text-xl text-foreground/70">Showcasing innovation across all wings</p>
           </div>
 
-          {/* Projects Grid - one card per row */}
-          <div className="grid grid-cols-1 gap-8">
+          {/* Projects Grid - responsive 1 / 2 / 3 columns like Events */}
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {defaultProjects.map((project, index) => (
               <div
                 key={project.id}
-                className="card-glow overflow-hidden group slide-in-up"
+                className="card-glow overflow-hidden group slide-in-up h-[440px] flex flex-col"
                 style={{ animationDelay: `${index * 0.1}s` }}
               >
-                <div className={`grid grid-cols-1 ${index % 2 === 1 ? 'md:grid-cols-[1fr_auto]' : 'md:grid-cols-[auto_1fr]'} items-stretch`}>
-                  {/* Project Image (alternates left/right on md+) */}
-                  <div className={`relative w-full h-56 md:h-full md:aspect-square md:w-auto overflow-hidden ${index % 2 === 1 ? 'md:order-last' : ''}`}>
-                    <img
-                      src={project.image || "/placeholder.svg?key=project"}
-                      alt={project.title}
-                      className="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    />
+                {/* Project Image on top (match Events proportions) */}
+                <div className="relative w-full h-[75%] overflow-hidden">
+                  <img
+                    src={project.image || "/placeholder.svg?key=project"}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                  />
+                </div>
+
+                {/* Project Content below */}
+                <div className="p-5 flex-1 flex flex-col">
+                  <div className="self-start w-auto inline-flex items-center px-2 py-0.5 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-xs font-medium text-cyan-300 mb-2">
+                    {project.wing}
                   </div>
 
-                  {/* Project Content */}
-                  <div className={`p-6 flex flex-col ${index % 2 === 1 ? 'md:order-first' : ''}`}>
-                    <div className="inline-block px-3 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/30 text-xs font-medium text-cyan-300 mb-3">
-                      {project.wing}
-                    </div>
+                  <div className="flex-1">
+                    <h3 className="text-lg font-bold mb-1 group-hover:gradient-text transition-all line-clamp-2">{project.title}</h3>
+                    <p className="text-foreground/70 text-sm mt-1">{project.description}</p>
 
-                    <h3 className="text-xl font-bold mb-2">{project.title}</h3>
-                    <p className="text-foreground/70 text-sm mb-4">{project.description}</p>
-
-                    {/* Technologies */}
-                    <div className="flex flex-wrap gap-2 mb-4">
+                    <div className="mt-3 flex flex-wrap gap-2">
                       {project.technologies.map((tech, idx) => (
                         <span key={idx} className="px-2 py-1 rounded text-xs bg-purple-500/20 text-purple-300">
                           {tech}
                         </span>
                       ))}
                     </div>
+                  </div>
 
-                    {/* Links */}
-                    <div className="flex gap-2 pt-4 border-t border-border mt-auto">
-                      <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-card hover:bg-card/80 text-sm font-medium transition-all">
-                        <Github size={16} />
-                        Code
-                      </button>
-                      <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-purple-500/20 to-cyan-500/20 hover:from-purple-500/30 hover:to-cyan-500/30 text-sm font-medium transition-all">
-                        <ExternalLink size={16} />
-                        Live Demo
-                      </button>
-                    </div>
+                  <div className="pt-3 border-t border-border mt-4 flex gap-2">
+                    <button className="flex-1 flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-card hover:bg-card/80 text-sm font-medium transition-all">
+                      <Github size={16} />
+                      Code
+                    </button>
+                    <MagicButton className="flex-1" heightClass="h-10">
+                      <ExternalLink size={16} />
+                      <span>Live Demo</span>
+                    </MagicButton>
                   </div>
                 </div>
               </div>

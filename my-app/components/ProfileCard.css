@@ -76,7 +76,8 @@
     calc((var(--pointer-from-top) * 20px) - 6px) 20px -5px;
   transition: transform 1s ease;
   transform: translateZ(0) rotateX(0deg) rotateY(0deg);
-  background: rgba(0, 0, 0, 0.9);
+  /* Use solid theme card color so background grid never shows through */
+  background: var(--card);
   backface-visibility: hidden;
   overflow: hidden;
 }

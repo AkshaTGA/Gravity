@@ -42,8 +42,9 @@
   --gradient-start: oklch(0.4 0.18 280);
   --gradient-end: oklch(0.35 0.2 301);
   /* Brand gradient (purple → blue) used for CTA buttons */
-  --brand-from: #7c5cff;
-  --brand-to: #55b9e7;
+  /* Brand gradient switched to dark → light purple */
+  --brand-from: #4c1d95; /* dark purple */
+  --brand-to: #a78bfa; /* light purple */
 }
 
 .dark {
@@ -146,14 +147,27 @@
     box-shadow: 0 0 20px rgba(166, 140, 255, 0.3);
   }
 
-  /* Button gradient matching the heading style (purple → cyan) */
+  /* Button gradient: dark → light purple (uses brand vars) */
   .btn-gradient {
-    background-image: linear-gradient(135deg, rgb(126, 98, 240) 0%, rgb(88, 180, 230) 100%);
+    background-image: linear-gradient(135deg, var(--brand-from) 0%, var(--brand-to) 100%);
+    color: #ffffff;
   }
 
   .glow-effect-hover:hover {
     box-shadow: 0 0 30px rgba(166, 140, 255, 0.5);
     transition: box-shadow 0.3s ease;
+  }
+
+  /* Reusable black→purple gradient for wing cards */
+  .wing-card-gradient {
+    background-image: linear-gradient(
+      135deg,
+      #0a0a0f 0%,
+      #121224 35%,
+      var(--brand-from) 70%,
+      var(--brand-to) 100%
+    );
+    border: 1px solid rgba(167, 139, 250, 0.25);
   }
 
   .card-glow {
@@ -289,3 +303,27 @@
   color:white;
 }
 
+/* Ensure page surfaces don't block the global grid; keep cards opaque */
+@layer base {
+  /* Allow the background grid to be visible around content by making page-level backgrounds transparent */
+  main.bg-background {
+    background-color: transparent !important;
+  }
+}
+
+/* Background ripple animation tokens */
+@theme inline {
+  --animate-cell-ripple: cell-ripple var(--duration, 200ms) ease-out none 1 var(--delay, 0ms);
+
+  @keyframes cell-ripple {
+    0% {
+      opacity: 0.4;
+    }
+    50% {
+      opacity: 0.8;
+    }
+    100% {
+      opacity: 0.4;
+    }
+  }
+}

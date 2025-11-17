@@ -2,6 +2,7 @@
 
 import { wings } from "@/lib/data"
 import Link from "next/link"
+import MagicBorderCard from "@/components/magic-border-card"
 
 export function FeaturesSection() {
   return (
@@ -15,11 +16,11 @@ export function FeaturesSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {wings.map((wing, index) => (
             <Link href="/wings" key={wing.id}>
-              <div className="card-glow p-8 h-full cursor-pointer group" style={{ animationDelay: `${index * 0.1}s` }}>
+              <MagicBorderCard innerClassName="card-glow p-8 h-full cursor-pointer group rounded-2xl" >
                 <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">{wing.icon}</div>
                 <h3 className="text-xl font-bold mb-3 group-hover:gradient-text transition-all">{wing.name}</h3>
                 <p className="text-foreground/70 text-sm leading-relaxed">{wing.description}</p>
-              </div>
+              </MagicBorderCard>
             </Link>
           ))}
         </div>
@@ -27,11 +28,11 @@ export function FeaturesSection() {
         {/* Special 7th wing card */}
         <div className="mt-6">
           <Link href="/wings">
-            <div className="card-glow p-8 cursor-pointer group text-center">
+            <MagicBorderCard innerClassName="card-glow p-8 cursor-pointer group text-center rounded-2xl">
               <div className="text-5xl mb-4 group-hover:scale-110 transition-transform duration-300">🚀</div>
               <h3 className="text-xl font-bold mb-3">Learn More</h3>
               <p className="text-foreground/70 text-sm">Explore detailed information about each wing</p>
-            </div>
+            </MagicBorderCard>
           </Link>
         </div>
       </div>

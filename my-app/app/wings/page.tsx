@@ -4,6 +4,8 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { wings } from "@/lib/data"
 import Link from "next/link"
+import MagicBorderCard from "@/components/magic-border-card"
+import MagicBorderExact from "@/components/magic-border-exact"
 
 export default function WingsPage() {
   return (
@@ -28,10 +30,10 @@ export default function WingsPage() {
                   data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
                   data-aos-anchor-placement="top-bottom"
                 >
-                  <div className="w-full h-64 md:h-80 rounded-lg overflow-hidden card-glow">
-                    <div className={`w-full h-full bg-linear-to-br ${wing.color} flex items-center justify-center`}>
+                  <div className="w-full h-64 md:h-80 rounded-lg overflow-hidden">
+                    <MagicBorderExact className="h-full rounded-lg" innerClassName="h-full flex items-center justify-center rounded-lg">
                       <span className="text-9xl">{wing.icon}</span>
-                    </div>
+                    </MagicBorderExact>
                   </div>
                 </div>
 

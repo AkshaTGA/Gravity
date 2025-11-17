@@ -4,6 +4,7 @@ import { useEffect, useState, useMemo } from "react"
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { Calendar, MapPin, X } from "lucide-react"
+import MagicButton from "@/components/magic-button"
 import { useAdminStore } from "@/hooks/use-admin-store"
 import type { Event } from "@/lib/types"
 
@@ -166,7 +167,7 @@ export default function EventsPage() {
                 onChange={(e) => setEmail(e.target.value)}
                 className="flex-1 px-4 py-2 rounded-lg bg-card border border-border text-foreground placeholder-foreground/50 focus:outline-none focus:ring-2 focus:ring-primary"
               />
-              <button
+              <MagicButton
                 onClick={async () => {
                   const valid = /^(?:[a-zA-Z0-9_.'+\-]+)@(?:[a-zA-Z0-9\-]+\.)+[a-zA-Z]{2,}$/.test(email)
                   if (!valid) {
@@ -196,10 +197,10 @@ export default function EventsPage() {
                   }
                 }}
                 disabled={subStatus === "loading"}
-                className="px-6 py-2 rounded-lg bg-linear-to-r from-[var(--brand-from)] to-[var(--brand-to)] text-white font-medium hover:shadow-lg transition-all disabled:opacity-60"
+                heightClass="h-10"
               >
                 {subStatus === "loading" ? "Subscribing…" : "Subscribe"}
-              </button>
+              </MagicButton>
             </div>
             {subStatus !== "idle" && (
               <p className={`mt-3 text-sm ${subStatus === "ok" ? "text-green-400" : "text-red-400"}`}>{subMessage}</p>

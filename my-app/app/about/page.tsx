@@ -2,6 +2,7 @@
 
 import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
+import MagicButton from "@/components/magic-button"
 
 export default function AboutPage() {
   return (
@@ -72,9 +73,9 @@ export default function AboutPage() {
               Whether you're a beginner just starting your tech journey or an experienced developer, Gravity welcomes
               you. Join us in building an amazing tech community!
             </p>
-            <button className="px-8 py-3 rounded-lg bg-linear-to-r from-[var(--brand-from)] to-[var(--brand-to)] text-white font-bold hover:shadow-lg hover:shadow-purple-500/50 transition-all">
+            <MagicButton heightClass="h-11">
               Get Started Today
-            </button>
+            </MagicButton>
           </div>
         </div>
       </main>

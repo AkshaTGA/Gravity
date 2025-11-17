@@ -4,6 +4,7 @@ import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 import LiquidEther from './LiquidEther';
 import { useState } from "react";
+import MagicButton from "@/components/magic-button";
 
 export function HeroSection() {
   return (
@@ -69,19 +70,13 @@ export function HeroSection() {
 
         {/* CTA Buttons */}
   <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-          <Link
-            href="#wings"
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg btn-gradient text-white font-bold hover:shadow-lg hover:shadow-purple-400/40 transition-all transform hover:scale-105"
-          >
-            Explore Wings
+          <MagicButton href="#wings" className="font-bold">
+            <span>Explore Wings</span>
             <ArrowRight size={20} />
-          </Link>
-          <Link
-            href="/contact"
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-card border border-border text-foreground font-bold hover:bg-card/80 transition-all"
-          >
+          </MagicButton>
+          <MagicButton href="/contact" className="font-bold" heightClass="h-12">
             Get in Touch
-          </Link>
+          </MagicButton>
         </div>
 
         {/* Gravity Logo Display (replaces stats) */}

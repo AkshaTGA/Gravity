@@ -6,6 +6,7 @@ import { useState } from "react"
 import type { Member } from "@/lib/types"
 import { wings } from "@/lib/data"
 import { uploadToCloudinary } from "@/lib/cloudinary"
+import MagicButton from "@/components/magic-button"
 
 interface MemberFormProps {
   member?: Member
@@ -228,13 +229,9 @@ export function MemberForm({ member, onSubmit, onCancel }: MemberFormProps) {
       </div>
 
       <div className="flex gap-2 pt-4">
-        <button
-          type="submit"
-          disabled={uploading}
-          className="flex-1 px-4 py-2 rounded-lg bg-linear-to-r from-[var(--brand-from)] to-[var(--brand-to)] text-white font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all disabled:opacity-50"
-        >
+        <MagicButton type="submit" className="flex-1" heightClass="h-11" disabled={uploading}>
           {member ? "Update" : "Add"} Member
-        </button>
+        </MagicButton>
         <button
           type="button"
           onClick={onCancel}

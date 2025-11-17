@@ -348,11 +348,12 @@ const ProfileCardComponent: React.FC<ProfileCardProps> = ({
     onContactClick?.();
   }, [onContactClick]);
 
+  // Handlers to control delayed avatar expansion
   const handleAvatarMouseEnter = useCallback(() => {
     if (hoverTimerRef.current) window.clearTimeout(hoverTimerRef.current);
     hoverTimerRef.current = window.setTimeout(() => {
       cardRef.current?.classList.add('avatar-expanded');
-    }, 300);
+    }, 500);
   }, []);
 
   const clearAvatarExpandState = useCallback(() => {

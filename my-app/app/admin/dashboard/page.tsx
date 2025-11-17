@@ -8,9 +8,11 @@ import { Footer } from "@/components/footer"
 import { MemberForm } from "@/components/member-form"
 import { EventForm } from "@/components/event-form"
 import type { Member, Event } from "@/lib/types"
-import { Edit2, Trash2, Plus, LogOut, Users, Calendar, Image as ImageIcon, Type } from "lucide-react"
+import { Edit2, Trash2, Plus, LogOut, Users, Calendar, BookOpen } from "lucide-react"
+import { getPendingBlogs, getApprovedBlogs, approveBlog, rejectBlog, removeBlog } from "@/lib/blog-store"
 import { useMemo, useState as useReactState } from "react"
 import { useAdminStore as useStore } from "@/hooks/use-admin-store"
+import MagicButton from "@/components/magic-button"
 
 export default function AdminDashboard() {
   const {
@@ -35,6 +37,8 @@ export default function AdminDashboard() {
   const [isAddingEvent, setIsAddingEvent] = useState(false)
   const [showAllMembers, setShowAllMembers] = useState(false)
   const [showAllEvents, setShowAllEvents] = useState(false)
+  const [pendingBlogs, setPendingBlogs] = useState(() => getPendingBlogs())
+  const [approvedBlogs, setApprovedBlogs] = useState(() => getApprovedBlogs())
 
   // Run auth check once on mount.
   // Redirect unauthenticated users only after auth has been checked.
@@ -70,6 +74,11 @@ export default function AdminDashboard() {
     router.push("/")
   }
 
+  const refreshBlogs = () => {
+    setPendingBlogs(getPendingBlogs())
+    setApprovedBlogs(getApprovedBlogs())
+  }
+
   if (!authChecked) {
     return (
       <main className="min-h-screen flex items-center justify-center bg-background">
@@ -101,13 +110,10 @@ export default function AdminDashboard() {
               <h1 className="text-4xl font-bold gradient-text">Admin Dashboard</h1>
               <p className="text-foreground/60 mt-1">Manage Gravity members and coordinators</p>
             </div>
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 px-4 py-2 rounded-lg bg-card border border-border hover:bg-card/80 transition-all"
-            >
+            <MagicButton onClick={handleLogout} heightClass="h-10">
               <LogOut size={20} />
-              Logout
-            </button>
+              <span>Logout</span>
+            </MagicButton>
           </div>
 
           <div className="grid lg:grid-cols-3 gap-8">
@@ -129,13 +135,10 @@ export default function AdminDashboard() {
                   />
                 )}
                 {!editingMember && !isAddingNew && (
-                  <button
-                    onClick={() => setIsAddingNew(true)}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-linear-to-r from-[var(--brand-from)] to-[var(--brand-to)] text-white font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all"
-                  >
+                  <MagicButton onClick={() => setIsAddingNew(true)} className="w-full" heightClass="h-11">
                     <Plus size={20} />
-                    Add New Member
-                  </button>
+                    <span>Add New Member</span>
+                  </MagicButton>
                 )}
                 </div>
 
@@ -155,13 +158,10 @@ export default function AdminDashboard() {
                   />
                 )}
                 {!editingEvent && !isAddingEvent && (
-                  <button
-                    onClick={() => setIsAddingEvent(true)}
-                    className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-linear-to-r from-[var(--brand-from)] to-[var(--brand-to)] text-white font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all"
-                  >
+                  <MagicButton onClick={() => setIsAddingEvent(true)} className="w-full" heightClass="h-11">
                     <Plus size={20} />
-                    Add New Event
-                  </button>
+                    <span>Add New Event</span>
+                  </MagicButton>
                 )}
                 </div>
               </div>
@@ -241,10 +241,9 @@ export default function AdminDashboard() {
                       onClick={() => setShowAllEvents(s => !s)}
                       className="px-3 py-2 rounded-lg bg-card border border-border hover:bg-card/80 text-sm"
                     >{showAllEvents ? "Hide" : "Show All"}</button>
-                    <button
-                      onClick={() => setIsAddingEvent(true)}
-                      className="px-3 py-2 rounded-lg bg-linear-to-r from-[var(--brand-from)] to-[var(--brand-to)] text-white text-sm font-medium"
-                    >Add Event</button>
+                    <MagicButton onClick={() => setIsAddingEvent(true)} heightClass="h-9">
+                      Add Event
+                    </MagicButton>
                   </div>
                 </div>
                 <div className="space-y-3">
@@ -300,6 +299,56 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                   ))}
+                </div>
+              </div>
+
+              {/* Blogs Management */}
+              <div className="mt-12">
+                <div className="flex items-center justify-between mb-4">
+                  <h2 className="text-xl font-bold flex items-center gap-2"><BookOpen size={18}/> Blogs (Pending)</h2>
+                  <MagicButton onClick={refreshBlogs} heightClass="h-9">Refresh</MagicButton>
+                </div>
+                {pendingBlogs.length === 0 ? (
+                  <div className="text-sm text-foreground/60">No pending blogs.</div>
+                ) : (
+                  <div className="space-y-3">
+                    {pendingBlogs.map(b => (
+                      <div key={b.id} className="card-glow p-4 flex items-center gap-4">
+                        <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 wing-card-gradient flex items-center justify-center text-xl">✍️</div>
+                        <div className="flex-1">
+                          <div className="font-semibold">{b.name} <span className="text-foreground/60">• {b.rollNumber}</span></div>
+                          <a href={b.mediumUrl} target="_blank" rel="noreferrer" className="text-sm text-purple-300 underline break-all">{b.mediumUrl}</a>
+                        </div>
+                        <div className="flex gap-2">
+                          <MagicButton onClick={()=>{ approveBlog(b.id); refreshBlogs() }} heightClass="h-9">Approve</MagicButton>
+                          <button onClick={()=>{ rejectBlog(b.id); refreshBlogs() }} className="px-4 py-2 rounded-lg bg-card border border-border hover:bg-card/80 text-red-400">Reject</button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Approved blogs - allow removal */}
+                <div className="mt-6">
+                  <h3 className="text-lg font-semibold mb-3">Approved Blogs</h3>
+                  {approvedBlogs.length === 0 ? (
+                    <div className="text-sm text-foreground/60">No approved blogs.</div>
+                  ) : (
+                    <div className="space-y-3">
+                      {approvedBlogs.map(b => (
+                        <div key={b.id} className="card-glow p-4 flex items-center gap-4">
+                          <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0 bg-card flex items-center justify-center text-xl">✍️</div>
+                          <div className="flex-1">
+                            <div className="font-semibold">{b.name} <span className="text-foreground/60">• {b.rollNumber}</span></div>
+                            <a href={b.mediumUrl} target="_blank" rel="noreferrer" className="text-sm text-purple-300 underline break-all">{b.mediumUrl}</a>
+                          </div>
+                          <div className="flex gap-2">
+                            <button onClick={()=>{ if(confirm('Remove this approved blog?')) { removeBlog(b.id); refreshBlogs() } }} className="px-4 py-2 rounded-lg bg-card border border-border hover:bg-card/80 text-red-400">Remove</button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

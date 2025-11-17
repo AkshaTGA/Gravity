@@ -5,6 +5,7 @@ import type React from "react"
 import { useState } from "react"
 import { useAdminStore } from "@/hooks/use-admin-store"
 import { useRouter } from "next/navigation"
+import MagicButton from "@/components/magic-button"
 
 export function AdminLoginForm() {
   const [username, setUsername] = useState("")
@@ -48,12 +49,9 @@ export function AdminLoginForm() {
           />
         </div>
         {error && <p className="text-red-500 text-sm">{error}</p>}
-        <button
-          type="submit"
-          className="w-full px-4 py-2 rounded-lg bg-linear-to-r from-[var(--brand-from)] to-[var(--brand-to)] text-white font-medium hover:shadow-lg hover:shadow-purple-500/50 transition-all"
-        >
+        <MagicButton type="submit" className="w-full" heightClass="h-11">
           Login
-        </button>
+        </MagicButton>
       </form>
     </div>
   )

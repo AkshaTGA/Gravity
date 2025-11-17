@@ -6,6 +6,7 @@ import { Navigation } from "@/components/navigation"
 import { Footer } from "@/components/footer"
 import { useState } from "react"
 import { Mail, MapPin, MessageSquare } from "lucide-react"
+import MagicButton from "@/components/magic-button"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -139,12 +140,9 @@ export default function ContactPage() {
                   />
                 </div>
 
-                <button
-                  type="submit"
-                  className="w-full px-6 py-3 rounded-lg bg-linear-to-r from-[var(--brand-from)] to-[var(--brand-to)] text-white font-bold hover:shadow-lg hover:shadow-purple-500/50 transition-all transform hover:scale-105"
-                >
+                <MagicButton type="submit" className="w-full" heightClass="h-12">
                   {sending ? "Sending…" : submitted ? "✓ Message Sent!" : "Send Message"}
-                </button>
+                </MagicButton>
 
                 {error && (
                   <div className="mt-2 p-3 rounded-lg bg-red-500/20 border border-red-500/30 text-red-300 text-sm">

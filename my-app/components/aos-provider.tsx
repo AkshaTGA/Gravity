@@ -32,14 +32,11 @@ export function AOSProvider() {
     }
   }, [])
 
-  // Refresh on route changes so new content gets animated
   useEffect(() => {
-    // Defer to next tick to ensure DOM is updated
     const id = setTimeout(() => AOS.refreshHard(), 0)
     return () => clearTimeout(id)
   }, [pathname])
 
-  // Refresh when window gains focus or tab becomes visible again
   useEffect(() => {
     const onFocus = () => AOS.refreshHard()
     const onVisibility = () => {

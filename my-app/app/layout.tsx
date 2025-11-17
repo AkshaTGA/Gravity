@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { AOSProvider } from "@/components/aos-provider"
+import { BackgroundRippleEffect } from "@/components/Background"
 
 const _geist = Geist({ subsets: ["latin"] })
 const _geistMono = Geist_Mono({ subsets: ["latin"] })
@@ -39,9 +40,15 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <body className={`font-sans antialiased bg-background text-foreground`}>
-        <AOSProvider />
-        {children}
-        <Analytics />
+        {/* Global background effect */}
+        <div className="fixed inset-0 z-0">
+          <BackgroundRippleEffect />
+        </div>
+        <div className="relative z-10">
+          <AOSProvider />
+          {children}
+          <Analytics />
+        </div>
       </body>
     </html>
   )
