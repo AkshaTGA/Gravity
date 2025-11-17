@@ -14,12 +14,18 @@ export function AdminLoginForm() {
   const { login } = useAdminStore()
   const router = useRouter()
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (login(username, password)) {
-      router.push("/admin/dashboard")
-    } else {
-      setError('Invalid credentials. Hint: username is "admin"')
+    try {
+      const ok = await login(username, password)
+      if (ok) {
+        router.push("/admin/dashboard")
+      } else {
+        setError('Invalid credentials. Hint: username is "admin"')
+      }
+    } catch (err) {
+      console.error("Login failed", err)
+      setError('Login failed due to network error')
     }
   }
 
